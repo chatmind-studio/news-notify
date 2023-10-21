@@ -26,7 +26,7 @@ class NewsNotify(Bot):
         self.crawl = StockCrawl()
         self.basic_id = "847mdfxp"
         self.app_url = (
-            "https://stock-notify-linebot.seriaati.xyz"
+            "https://news-notify-linebot.seriaati.xyz"
             if sys.platform == "linux"
             else "https://vastly-assuring-grub.ngrok-free.app"
         )
@@ -43,9 +43,7 @@ class NewsNotify(Bot):
         self.line_notify_api = LineNotifyAPI(
             client_id=line_notify_client_id,
             client_secret=line_notify_client_secret,
-            redirect_uri="https://stock-notify-linebot.seriaati.xyz/line-notify"
-            if sys.platform == "linux"
-            else "https://vastly-assuring-grub.ngrok-free.app/line-notify",
+            redirect_uri=f"{self.app_url}/line-notify",
         )
 
     async def _line_notify_callback(self, request: web.Request) -> web.Response:
