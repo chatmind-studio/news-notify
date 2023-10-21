@@ -1,0 +1,4 @@
+line.py @ git+https://github.com/seriaati/line.py
+python-dotenv
+tortoise-orm[asyncpg]
+stock-crawl @ git+https://github.com/seriaati/stock_crawl
