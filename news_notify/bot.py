@@ -121,7 +121,7 @@ class NewsNotify(Bot):
 
                 await self.line_notify_api.notify(
                     user.line_notify_token,
-                    message=f"\n{db_stock}\n發言時間: {n.date_time.strftime('%Y/%m/%d %H:%M')}\n主旨: {n.title}\n\nGoogle 搜尋:\n{await db_news.google_search}",
+                    message=f"\n{db_stock}\n發言時間: {n.date_time.strftime('%Y/%m/%d %H:%M')}\n主旨: {n.title}",
                 )
                 await db_news.notified_users.add(user)
 

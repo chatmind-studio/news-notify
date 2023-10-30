@@ -36,17 +36,6 @@ class News(Model):
         "models.User", related_name="notified_news"
     )
 
-    @property
-    async def precent_encode_google_search(self) -> str:
-        await self.fetch_related("stock")
-        return f"https://google.com.tw/search?q={quote(f'{self.stock.name} {self.stock.id} {self.title}')}"
-
-    @property
-    async def google_search(self) -> str:
-        await self.fetch_related("stock")
-        query = f"{self.stock.name} {self.stock.id} {self.title}".replace(" ", "%20")
-        return f"https://google.com.tw/search?q={query}"
-
     class Meta:
         unique_together = ("title", "datetime", "stock")
         ordering = ["-datetime"]

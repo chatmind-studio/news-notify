@@ -9,6 +9,7 @@ from line.models import (
     QuickReplyItem,
     URIAction,
 )
+
 from ..bot import NewsNotify
 from ..models import Stock, User
 from ..utils import shorten, split_list
@@ -58,9 +59,7 @@ class StockCog(Cog):
                         ]
                     ),
                 )
-            db_stock, _ = await Stock.get_or_create(
-                id=stock.id, name=stock.name
-            )
+            db_stock, _ = await Stock.get_or_create(id=stock.id, name=stock.name)
             await db_stock.users.add(user)
             await ctx.reply_text(
                 f"✅ 成功\n已新增 {db_stock}, 您將會開始收到來自 {db_stock} 的重大訊息通知",
@@ -203,17 +202,18 @@ class StockCog(Cog):
                 title=shorten(news.title, 40),
                 text=f"發言時間:\n{news.datetime.strftime('%Y/%m/%d %H:%M')}",
                 actions=[
-                    URIAction("查看詳情", uri=await news.precent_encode_google_search),
+                    PostbackAction("查看詳情", data="ignore", display_text=news.title),
                 ],
             )
             columns.append(column)
-            
+
         quick_reply_items: List[QuickReplyItem] = []
         if index > 0:
             quick_reply_items.append(
                 QuickReplyItem(
                     action=PostbackAction(
-                        label="⬅️ 上一頁", data=f"cmd=view_news&stock_id={stock_id}&index={index-1}"
+                        label="⬅️ 上一頁",
+                        data=f"cmd=view_news&stock_id={stock_id}&index={index-1}",
                     )
                 ),
             )
@@ -221,11 +221,12 @@ class StockCog(Cog):
             quick_reply_items.append(
                 QuickReplyItem(
                     action=PostbackAction(
-                        label="➡️ 下一頁", data=f"cmd=view_news&stock_id={stock_id}&index={index+1}"
+                        label="➡️ 下一頁",
+                        data=f"cmd=view_news&stock_id={stock_id}&index={index+1}",
                     )
                 )
             )
-        
+
         await ctx.reply_template(
             f"{stock} 發布過的重大訊息",
             template=CarouselTemplate(columns=columns),
