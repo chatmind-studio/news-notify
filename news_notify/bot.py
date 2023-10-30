@@ -104,15 +104,13 @@ class NewsNotify(Bot):
                     id=fetched_stock.id, name=fetched_stock.name
                 )
 
-            try:
-                db_news = await News.create(
-                    title=n.title,
-                    datetime=n.date_time,
-                    stock=db_stock,
-                )
-            except IntegrityError:
-                db_news = await News.get(stock_id=db_stock.id, title=n.title)
+            db_news, _ = await News.get_or_create(
+                title=n.title,
+                datetime=n.date_time,
+                stock=db_stock,
+            )
 
+            await db_news.fetch_related("notified_users")
             notified_users = await db_news.notified_users.all()
             users = await User.filter(stocks__id=n.stock_id)
             for user in users:
