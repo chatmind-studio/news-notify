@@ -31,3 +31,7 @@ class AdminCog(Cog):
             return
         await ctx.reply_text("crawling news...")
         await self.bot.crawl_news()
+
+    @command
+    async def get_user_id(self, ctx: Context) -> None:
+        await ctx.reply_text(ctx.user_id)
