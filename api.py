@@ -15,7 +15,7 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     await Tortoise.init(
         db_url=os.getenv("DB_URL") or "sqlite://db.sqlite3",
-        modules={"models": ["crn.models"]},
+        modules={"models": ["news_notify.models"]},
     )
     await Tortoise.generate_schemas()
     app.state.session = aiohttp.ClientSession()
