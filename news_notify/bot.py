@@ -105,7 +105,7 @@ class NewsNotify(Bot):
                 )
 
             db_news, _ = await News.get_or_create(
-                title=n.title,
+                title=n.title[:100],
                 datetime=n.date_time,
                 stock=db_stock,
             )
