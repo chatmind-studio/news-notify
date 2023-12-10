@@ -105,11 +105,13 @@ class NewsNotify(Bot):
                 )
 
             news_id = f"{n.stock_id}_{n.date_of_speech}_{n.time_of_speech}"[:100]
-            db_news, _ = await News.get_or_create(
-                id=news_id,
-                data=n.model_dump(),
-                stock=db_stock,
-            )
+            db_news = await News.get_or_none(id=news_id)
+            if db_news is None:
+                db_news = await News.create(
+                    id=news_id,
+                    data=n.model_dump_json(),
+                    stock=db_stock,
+                )
 
             await db_news.fetch_related("notified_users")
             notified_users = await db_news.notified_users.all()
