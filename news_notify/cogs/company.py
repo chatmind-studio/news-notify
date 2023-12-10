@@ -7,7 +7,6 @@ from line.models import (
     PostbackAction,
     QuickReply,
     QuickReplyItem,
-    URIAction,
 )
 
 from ..bot import NewsNotify

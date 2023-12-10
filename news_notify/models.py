@@ -1,5 +1,4 @@
 from typing import Optional
-from urllib.parse import quote
 
 from tortoise import fields
 from tortoise.models import Model
