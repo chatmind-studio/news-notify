@@ -10,7 +10,7 @@ from line.models import (
 )
 
 from ..bot import NewsNotify
-from ..models import Stock, User
+from ..models import News, Stock, User
 from ..utils import shorten, split_list
 
 
@@ -198,10 +198,12 @@ class StockCog(Cog):
         columns: List[CarouselColumn] = []
         for news in split_news[index]:
             column = CarouselColumn(
-                title=shorten(news.title, 40),
-                text=f"發言時間:\n{news.datetime.strftime('%Y/%m/%d %H:%M')}",
+                title=str(news.stock),
+                text=shorten(news.data["title"]),
                 actions=[
-                    PostbackAction("查看詳情", data="ignore", display_text=news.title),
+                    PostbackAction(
+                        "查看詳情", data=f"cmd=show_news_detail&news_id={news.id}"
+                    ),
                 ],
             )
             columns.append(column)
@@ -233,3 +235,8 @@ class StockCog(Cog):
             if quick_reply_items
             else None,
         )
+
+    @command
+    async def show_news_detail(self, ctx: Context, news_id: str) -> None:
+        news = await News.get(id=news_id)
+        await ctx.reply_text(str(news))

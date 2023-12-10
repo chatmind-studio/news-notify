@@ -104,9 +104,10 @@ class NewsNotify(Bot):
                     id=fetched_stock.id, name=fetched_stock.name
                 )
 
+            news_id = f"{n.stock_id}_{n.date_of_speech}_{n.time_of_speech}"[:100]
             db_news, _ = await News.get_or_create(
-                title=n.title[:100],
-                datetime=n.date_time,
+                id=news_id,
+                data=n.model_dump(),
                 stock=db_stock,
             )
 
@@ -121,7 +122,7 @@ class NewsNotify(Bot):
 
                 await self.line_notify_api.notify(
                     user.line_notify_token,
-                    message=f"\n{db_stock}\n發言時間: {n.date_time.strftime('%Y/%m/%d %H:%M')}\n主旨: {n.title}",
+                    message=f"\n{db_stock}\n{db_news}",
                 )
                 await db_news.notified_users.add(user)
 

@@ -26,8 +26,8 @@ class Stock(Model):
 
 
 class News(Model):
-    title = fields.CharField(max_length=100)
-    datetime = fields.DatetimeField()
+    id = fields.CharField(max_length=100, pk=True)
+    data: fields.Field[dict[str, str]] = fields.JSONField()  # type: ignore
     stock: fields.ForeignKeyRelation[Stock] = fields.ForeignKeyField(
         "models.Stock", related_name="news"
     )
@@ -35,6 +35,5 @@ class News(Model):
         "models.User", related_name="notified_news"
     )
 
-    class Meta:
-        unique_together = ("title", "datetime", "stock")
-        ordering = ["-datetime"]
+    def __str__(self) -> str:
+        return "\n".join({f"{k}: {v}" for k, v in self.data.items()})
