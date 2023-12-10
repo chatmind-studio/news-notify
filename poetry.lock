@@ -1085,7 +1085,7 @@ pydantic = "^2.5.2"
 type = "git"
 url = "https://github.com/seriaati/stock_crawl"
 reference = "HEAD"
-resolved_reference = "532873d2f64e3614682380e9455e068a99ee9e00"
+resolved_reference = "2a7e564966d0039d2de28cd62fa2f322b458133e"
 
 [[package]]
 name = "tortoise-orm"
