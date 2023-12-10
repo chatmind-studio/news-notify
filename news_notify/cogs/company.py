@@ -198,7 +198,6 @@ class StockCog(Cog):
         columns: List[CarouselColumn] = []
         for news in split_news[index]:
             column = CarouselColumn(
-                title=str(news.stock),
                 text=shorten(news.data["title"]),
                 actions=[
                     PostbackAction(
