@@ -4,6 +4,11 @@
             "name": "news-notify",
             "script": "./run.py",
             "interpreter": "./.venv/bin/python"
+        },
+        {
+            "name": "news-notify-api",
+            "script": "./api.py",
+            "interpreter": "./.venv/bin/python"
         }
     ]
 }
