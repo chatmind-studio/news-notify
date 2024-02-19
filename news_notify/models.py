@@ -38,8 +38,5 @@ class News(Model):
     def __str__(self) -> str:
         return (
             f"發言日期: {self.data['date_of_speech']}\n"
-            f"事實發生日: {self.data['date_of_occurrence']}\n"
-            f"符合條款: {self.data['terms_complied']}\n"
             f"主旨: {self.data['title']}\n\n"
-            f"說明:\n{self.data['explanation']}\n"
         )
