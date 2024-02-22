@@ -93,6 +93,11 @@ class NewsNotify(Bot):
             await self.crawl_news()
 
     async def crawl_news(self) -> None:
+        now = get_now()
+        # do not crawl news between 11pm and 6am
+        if 23 <= now.hour <= 6:
+            return
+
         news = await self.crawl.fetch_news()
         for n in news:
             db_stock = await Stock.get_or_none(id=n.stock_id)
