@@ -124,7 +124,7 @@ class NewsNotify(Bot):
 
                 await self.line_notify_api.notify(
                     user.line_notify_token,
-                    message=f"\n{db_stock}\n{db_news}\nhttps://tw.stock.yahoo.com/q/ta?s={n.stock_id}",
+                    message=f"\n{db_stock}\n{db_news}\nhttps://goodinfo.tw/tw/StockDetail.asp?STOCK_ID={n.stock_id}",
                 )
                 await db_news.notified_users.add(user)
 
