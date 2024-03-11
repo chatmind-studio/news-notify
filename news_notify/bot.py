@@ -88,8 +88,8 @@ class NewsNotify(Bot):
 
     async def run_tasks(self) -> None:
         now = get_now()
-        # run task every 15 minutes
-        if now.minute % 15 == 0 and now.second < 1:
+        # run task every 30 minutes
+        if now.minute % 30 == 0 and now.second < 1:
             await self.crawl_news()
 
     async def crawl_news(self) -> None:
