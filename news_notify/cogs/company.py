@@ -92,9 +92,31 @@ class StockCog(Cog):
         )
 
     @command
-    async def view_companies(self, ctx: Context, index: int = 0) -> Any:
+    async def search_company(self, ctx: Context) -> Any:
+        user = await User.get(id=ctx.user_id)
+        user.temp_data = "cmd=view_companies&stock_id_or_name={text}"
+        await user.save()
+        await ctx.reply_text(
+            "請輸入欲查詢的公司的股票代號或簡稱\n例如:「2330」或「台積電」",
+            quick_reply=QuickReply(
+                [QuickReplyItem(PostbackAction(label="✖️ 取消", data="cmd=cancel"))]
+            ),
+        )
+
+    @command
+    async def view_companies(
+        self, ctx: Context, index: int = 0, stock_id_or_name: Optional[str] = None
+    ) -> Any:
         user = await User.get(id=ctx.user_id).prefetch_related("stocks")
         stocks = await user.stocks.all().prefetch_related("news")
+
+        if stock_id_or_name:
+            stocks = [
+                stock
+                for stock in stocks
+                if stock_id_or_name in stock.id or stock_id_or_name in stock.name
+            ]
+
         if not stocks:
             return await ctx.reply_text(
                 "目前還沒有新增任何公司",
@@ -146,6 +168,16 @@ class StockCog(Cog):
                     )
                 )
             )
+
+        quick_reply_items.append(
+            QuickReplyItem(
+                action=PostbackAction(
+                    label="🔎 搜尋公司",
+                    data="cmd=search_company",
+                    input_option="openKeyboard",
+                )
+            )
+        )
 
         await ctx.reply_template(
             "管理公司",
