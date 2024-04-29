@@ -233,7 +233,7 @@ class StockCog(Cog):
                 text=shorten(news.data["title"]),
                 actions=[
                     PostbackAction(
-                        "查看詳情", data=f"cmd=show_news_detail&news_id={news.id}"
+                        "查看詳情", data=f"cmd=show_news_detail&news_id={news.id}&stock_id={stock_id}"
                     ),
                 ],
             )
@@ -268,6 +268,7 @@ class StockCog(Cog):
         )
 
     @command
-    async def show_news_detail(self, ctx: Context, news_id: str) -> None:
+    async def show_news_detail(self, ctx: Context, news_id: str, stock_id: str) -> None:
         news = await News.get(id=news_id)
-        await ctx.reply_text(str(news))
+        text = f"{news}\n\nhttps://goodinfo.tw/tw/StockDetail.asp?STOCK_ID={stock_id}"
+        await ctx.reply_text(text)
