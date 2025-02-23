@@ -36,7 +36,7 @@ async def index() -> Response:
 @app.get("/add-stock")
 async def add_stock(user_id: str, stock_id: str) -> Response:
     async with app.state.session.get(
-        f"https://stock-api.seriaati.xyz/stocks/{stock_id}"
+        f"https://stock-api.seria.moe/stocks/{stock_id}"
     ) as resp:
         if resp.status != 200:
             raise HTTPException(status_code=404, detail="stock not found")
