@@ -1,21 +1,20 @@
-[tool.poetry]
+[project]
 name = "news-notify"
-version = "0.1.0"
-description = ""
-authors = ["seriaati <seria.ati@gmail.com>"]
-license = "GPL-3.0"
+version = "1.0.0"
+description = "上市櫃公司重大訊息即時通知"
 readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg>=0.30.0",
+    "fastapi>=0.115.8",
+    "line-messaging-api",
+    "stock-crawl",
+    "tortoise-orm>=0.24.0",
+    "uvicorn>=0.34.0",
+]
+authors = [{ name = "seriaati", email = "seria.ati@gmail.com" }]
+license = { file = "LICENSE" }
 
-[tool.poetry.dependencies]
-python = "^3.11"
-line-py = {git = "https://github.com/seriaati/line.py"}
-tortoise-orm = "^0.20.0"
-asyncpg = "^0.28.0"
-stock-crawl = {git = "https://github.com/seriaati/stock_crawl"}
-uvicorn = "^0.27.1"
-fastapi = "^0.109.2"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv.sources]
+line-messaging-api = { git = "https://github.com/seriaati/line.py" }
+stock-crawl = { git = "https://github.com/seriaati/stock_crawl" }
