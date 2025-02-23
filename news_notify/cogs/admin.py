@@ -7,12 +7,12 @@ OWNER_ID = "Udfc687303c03a91398d74cbfd33dcea4"
 
 
 class AdminCog(Cog):
-    def __init__(self, bot: NewsNotify):
+    def __init__(self, bot: NewsNotify) -> None:
         super().__init__(bot)
         self.bot = bot
 
     @command
-    async def admin(self, ctx: Context):
+    async def admin(self, ctx: Context) -> None:
         if ctx.user_id != OWNER_ID:
             return
         items = [
@@ -26,7 +26,7 @@ class AdminCog(Cog):
         await ctx.reply_text("管理員界面", quick_reply=QuickReply(items=items))
 
     @command
-    async def crawl_news(self, ctx: Context):
+    async def crawl_news(self, ctx: Context) -> None:
         if ctx.user_id != OWNER_ID:
             return
         await ctx.reply_text("crawling news...")

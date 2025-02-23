@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any
 
 from line import Cog, Context, command
 from line.models import (
@@ -15,13 +15,13 @@ from ..utils import shorten, split_list
 
 
 class StockCog(Cog):
-    def __init__(self, bot: NewsNotify):
+    def __init__(self, bot: NewsNotify) -> None:
         super().__init__(bot)
         self.bot = bot
 
     @command
     async def add_company(
-        self, ctx: Context, stock_id_or_name: Optional[str] = None
+        self, ctx: Context, stock_id_or_name: str | None = None
     ) -> Any:
         user = await User.get(id=ctx.user_id).prefetch_related("stocks")
 
@@ -77,6 +77,7 @@ class StockCog(Cog):
                     ]
                 ),
             )
+        return None
 
     @command
     async def cancel(self, ctx: Context) -> Any:
@@ -105,7 +106,7 @@ class StockCog(Cog):
 
     @command
     async def view_companies(
-        self, ctx: Context, index: int = 0, stock_id_or_name: Optional[str] = None
+        self, ctx: Context, index: int = 0, stock_id_or_name: str | None = None
     ) -> Any:
         user = await User.get(id=ctx.user_id).prefetch_related("stocks")
         stocks = await user.stocks.all().prefetch_related("news")
@@ -134,7 +135,7 @@ class StockCog(Cog):
             )
 
         split_stocks = split_list(stocks, 10)
-        columns: List[CarouselColumn] = []
+        columns: list[CarouselColumn] = []
         for stock in split_stocks[index]:
             news_count = await stock.news.all().count()
             column = CarouselColumn(
@@ -151,12 +152,12 @@ class StockCog(Cog):
             )
             columns.append(column)
 
-        quick_reply_items: List[QuickReplyItem] = []
+        quick_reply_items: list[QuickReplyItem] = []
         if index > 0:
             quick_reply_items.append(
                 QuickReplyItem(
                     action=PostbackAction(
-                        label="⬅️ 上一頁", data=f"cmd=view_companies&index={index-1}"
+                        label="⬅️ 上一頁", data=f"cmd=view_companies&index={index - 1}"
                     )
                 ),
             )
@@ -164,7 +165,7 @@ class StockCog(Cog):
             quick_reply_items.append(
                 QuickReplyItem(
                     action=PostbackAction(
-                        label="➡️ 下一頁", data=f"cmd=view_companies&index={index+1}"
+                        label="➡️ 下一頁", data=f"cmd=view_companies&index={index + 1}"
                     )
                 )
             )
@@ -186,6 +187,7 @@ class StockCog(Cog):
             if quick_reply_items
             else None,
         )
+        return None
 
     @command
     async def delete_company(self, ctx: Context, stock_id: str) -> Any:
@@ -227,7 +229,7 @@ class StockCog(Cog):
             )
 
         split_news = split_list(news, 10)
-        columns: List[CarouselColumn] = []
+        columns: list[CarouselColumn] = []
         for news in split_news[index]:
             column = CarouselColumn(
                 text=shorten(news.data["title"]),
@@ -239,13 +241,13 @@ class StockCog(Cog):
             )
             columns.append(column)
 
-        quick_reply_items: List[QuickReplyItem] = []
+        quick_reply_items: list[QuickReplyItem] = []
         if index > 0:
             quick_reply_items.append(
                 QuickReplyItem(
                     action=PostbackAction(
                         label="⬅️ 上一頁",
-                        data=f"cmd=view_news&stock_id={stock_id}&index={index-1}",
+                        data=f"cmd=view_news&stock_id={stock_id}&index={index - 1}",
                     )
                 ),
             )
@@ -254,7 +256,7 @@ class StockCog(Cog):
                 QuickReplyItem(
                     action=PostbackAction(
                         label="➡️ 下一頁",
-                        data=f"cmd=view_news&stock_id={stock_id}&index={index+1}",
+                        data=f"cmd=view_news&stock_id={stock_id}&index={index + 1}",
                     )
                 )
             )
@@ -266,6 +268,7 @@ class StockCog(Cog):
             if quick_reply_items
             else None,
         )
+        return None
 
     @command
     async def show_news_detail(self, ctx: Context, news_id: str, stock_id: str) -> None:

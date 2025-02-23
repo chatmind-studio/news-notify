@@ -12,7 +12,8 @@ async def main() -> None:
     channel_secret = os.getenv("LINE_CHANNEL_SECRET")
     access_token = os.getenv("LINE_ACCESS_TOKEN")
     if not (channel_secret and access_token):
-        raise RuntimeError("LINE_CHANNEL_SECRET and LINE_ACCESS_TOKEN are required.")
+        msg = "LINE_CHANNEL_SECRET and LINE_ACCESS_TOKEN are required."
+        raise RuntimeError(msg)
 
     bot = NewsNotify(channel_secret, access_token, db_url=os.getenv("DB_URL"))
     await bot.run(port=8001)

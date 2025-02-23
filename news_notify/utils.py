@@ -1,12 +1,13 @@
 import datetime
-from typing import List, TypeVar
+from typing import TypeVar
 
 T = TypeVar("T")
 
 
-def split_list(input_list: List[T], n: int) -> List[List[T]]:
+def split_list[T](input_list: list[T], n: int) -> list[list[T]]:
     if n <= 0:
-        raise ValueError("Parameter n must be a positive integer")
+        msg = "Parameter n must be a positive integer"
+        raise ValueError(msg)
 
     return [input_list[i : i + n] for i in range(0, len(input_list), n)]
 

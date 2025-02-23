@@ -14,7 +14,7 @@ from ..bot import NewsNotify
 
 
 class InfoCog(Cog):
-    def __init__(self, bot: NewsNotify):
+    def __init__(self, bot: NewsNotify) -> None:
         super().__init__(bot)
         self.bot = bot
 

@@ -1,4 +1,3 @@
-from typing import Optional
 
 from tortoise import fields
 from tortoise.models import Model
@@ -9,9 +8,9 @@ class User(Model):
     stocks: fields.ManyToManyRelation["Stock"] = fields.ManyToManyField(
         "models.Stock", related_name="users"
     )
-    line_notify_token: Optional[str] = fields.CharField(max_length=255, null=True)  # type: ignore
-    line_notify_state: Optional[str] = fields.CharField(max_length=255, null=True)  # type: ignore
-    temp_data: Optional[str] = fields.TextField(null=True)  # type: ignore
+    line_notify_token: str | None = fields.CharField(max_length=255, null=True)  # type: ignore
+    line_notify_state: str | None = fields.CharField(max_length=255, null=True)  # type: ignore
+    temp_data: str | None = fields.TextField(null=True)  # type: ignore
     notified_news: fields.ManyToManyRelation["News"]
 
 

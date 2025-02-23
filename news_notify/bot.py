@@ -2,7 +2,6 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Optional
 
 from aiohttp import web
 from line import Bot
@@ -19,8 +18,8 @@ from .utils import get_now
 
 class NewsNotify(Bot):
     def __init__(
-        self, channel_secret: str, access_token: str, *, db_url: Optional[str] = None
-    ):
+        self, channel_secret: str, access_token: str, *, db_url: str | None = None
+    ) -> None:
         super().__init__(channel_secret=channel_secret, access_token=access_token)
         self.db_url = db_url
         self.crawl = StockCrawl()
@@ -32,13 +31,15 @@ class NewsNotify(Bot):
         )
         self.task_interval = 1
 
-    def _setup_line_notify(self):
+    def _setup_line_notify(self) -> None:
         line_notify_client_id = os.getenv("LINE_NOTIFY_CLIENT_ID")
         if line_notify_client_id is None:
-            raise RuntimeError("LINE_NOTIFY_CLIENT_ID is not set")
+            msg = "LINE_NOTIFY_CLIENT_ID is not set"
+            raise RuntimeError(msg)
         line_notify_client_secret = os.getenv("LINE_NOTIFY_CLIENT_SECRET")
         if line_notify_client_secret is None:
-            raise RuntimeError("LINE_NOTIFY_CLIENT_SECRET is not set")
+            msg = "LINE_NOTIFY_CLIENT_SECRET is not set"
+            raise RuntimeError(msg)
 
         self.line_notify_api = LineNotifyAPI(
             client_id=line_notify_client_id,
