@@ -1,11 +1,8 @@
 import logging
-import os
 import sys
 from pathlib import Path
 
-from aiohttp import web
 from line import Bot
-from line.ext.notify import LineNotifyAPI
 from linebot.v3.webhooks import FollowEvent, MessageEvent
 from stock_crawl import StockCrawl
 from tortoise import Tortoise
@@ -13,7 +10,7 @@ from tortoise.exceptions import IntegrityError
 
 from .models import News, Stock, User
 from .rich_menus import RICH_MENU_1, RICH_MENU_2, RICH_MENU_3
-from .utils import get_now
+from .utils import get_now, send_webhook
 
 
 class NewsNotify(Bot):
@@ -30,44 +27,6 @@ class NewsNotify(Bot):
             else "https://vastly-assuring-grub.ngrok-free.app"
         )
         self.task_interval = 1
-
-    def _setup_line_notify(self) -> None:
-        line_notify_client_id = os.getenv("LINE_NOTIFY_CLIENT_ID")
-        if line_notify_client_id is None:
-            msg = "LINE_NOTIFY_CLIENT_ID is not set"
-            raise RuntimeError(msg)
-        line_notify_client_secret = os.getenv("LINE_NOTIFY_CLIENT_SECRET")
-        if line_notify_client_secret is None:
-            msg = "LINE_NOTIFY_CLIENT_SECRET is not set"
-            raise RuntimeError(msg)
-
-        self.line_notify_api = LineNotifyAPI(
-            client_id=line_notify_client_id,
-            client_secret=line_notify_client_secret,
-            redirect_uri=f"{self.app_url}/line-notify",
-        )
-
-    async def _line_notify_callback(self, request: web.Request) -> web.Response:
-        params = await request.post()
-        code = params.get("code")
-        state = params.get("state")
-
-        user = await User.get_or_none(line_notify_state=state)
-        if user and isinstance(code, str):
-            access_token = await self.line_notify_api.get_access_token(code)
-            user.line_notify_token = access_token
-            user.line_notify_state = None
-            await user.save()
-            await self.line_notify_api.notify(
-                access_token,
-                message=f"\n✅ LINE Notify 設定成功\n\n點擊此連結返回機器人:\nhttps://line.me/R/ti/p/%40{self.basic_id}",
-            )
-            await self.link_rich_menu_to_users(self.rich_menu_3_id, [user.id])
-
-        return web.Response(
-            status=302,
-            headers={"Location": "https://line.me/R/oaMessage/%40linenotify"},
-        )
 
     async def on_follow(self, event: FollowEvent) -> None:
         try:
@@ -128,9 +87,9 @@ class NewsNotify(Bot):
                 if user.line_notify_token is None:
                     continue
 
-                await self.line_notify_api.notify(
-                    user.line_notify_token,
-                    message=f"\n{db_stock}\n{db_news}\nhttps://goodinfo.tw/tw/StockDetail.asp?STOCK_ID={n.stock_id}",
+                await send_webhook(
+                    f"{db_stock}\n{db_news}\nhttps://goodinfo.tw/tw/StockDetail.asp?STOCK_ID={n.stock_id}",
+                    url=user.line_notify_token,
                 )
                 await db_news.notified_users.add(user)
 
@@ -141,10 +100,6 @@ class NewsNotify(Bot):
             modules={"models": ["news_notify.models"]},
         )
         await Tortoise.generate_schemas()
-
-        logging.info("Setting up LINE Notify")
-        self._setup_line_notify()
-        self.app.add_routes([web.post("/line-notify", self._line_notify_callback)])
 
         logging.info("Loading cogs")
         for cog in Path("news_notify/cogs").glob("*.py"):

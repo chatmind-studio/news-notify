@@ -1,6 +1,8 @@
 import datetime
 from typing import TypeVar
 
+import aiohttp
+
 T = TypeVar("T")
 
 
@@ -24,3 +26,8 @@ def shorten(text: str, max_length: int = 60) -> str:
     if len(text) > max_length:
         return text[: max_length - 3] + "..."
     return text
+
+
+async def send_webhook(message: str, *, url: str) -> None:
+    async with aiohttp.ClientSession() as session:
+        await session.post(url, json={"content": message})
