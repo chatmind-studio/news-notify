@@ -41,8 +41,16 @@ class SetNotifyCog(Cog):
         if not user.line_notify_token:
             user.temp_data = "cmd=set_webhook_url&url={text}"
             await user.save()
-            await ctx.reply_text(
-                "目前尚未設定 Discord Webhook\n輸入 Discord Webhook 連結以進行設定"
+            await ctx.reply_template(
+                "設置 Discord Webhook",
+                template=ButtonsTemplate(
+                    "請輸入您的 Discord Webhook 連結, 以便接收推播訊息",
+                    actions=[
+                        PostbackAction(
+                            "輸入連結", data="none", input_option="openKeyboard"
+                        ),
+                    ],
+                ),
             )
         else:
             template = ButtonsTemplate(
