@@ -706,7 +706,7 @@ wheels = [
 [[package]]
 name = "stock-crawl"
 version = "1.0.2"
-source = { git = "https://github.com/seriaati/stock_crawl#dc1ca21d821c7964a4b921475063efb69633590f" }
+source = { git = "https://github.com/seriaati/stock_crawl#50db7f8853cc8ee51415c8d58ed6a48bfcc3c393" }
 dependencies = [
     { name = "aiohttp" },
     { name = "asyncache" },
